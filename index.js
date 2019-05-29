@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
-import { PanResponder, View, StyleSheet, Dimensions, InteractionManager, I18nManager } from 'react-native'
+import { PanResponder, View, StyleSheet, Dimensions, InteractionManager } from 'react-native'
 
 import tween from './tweener'
 
@@ -66,6 +66,7 @@ export default class Drawer extends Component {
     tweenHandler: PropTypes.func,
     type: PropTypes.oneOf(['overlay', 'static', 'displace']),
     useInteractionManager: PropTypes.bool,
+    isRTL: PropTypes.bool,
 
     // deprecated
     panStartCompensation: PropTypes.bool,
@@ -95,6 +96,7 @@ export default class Drawer extends Component {
     acceptPan: true,
     acceptPanOnDrawer: true,
     tapToClose: false,
+    isRTL: false,
 
     styles: {},
     elevation: 0,
@@ -370,7 +372,7 @@ export default class Drawer extends Component {
     let pos0 = this.isLeftOrRightSide() ? e.nativeEvent.pageX : e.nativeEvent.pageY
     let deltaOpen = this.isLeftOrTopSide() ? this.getDeviceLength() - pos0 : pos0
     let deltaClose = this.isLeftOrTopSide() ? pos0 : this.getDeviceLength() - pos0
-
+    
     if ( this._open && deltaOpen > this.getOpenMask() ) return false
     if ( !this._open && deltaClose > this.getClosedMask() ) return false
     return true
@@ -536,7 +538,7 @@ export default class Drawer extends Component {
   /*** END DYNAMIC GETTERS ***/
 
   isLeftOrRightSide = () => {
-    if (I18nManager.isRTL) {
+    if (this.props.isRTL) {
       return ["right", "left"].includes(this.props.side)
     } else {
       return ["left", "right"].includes(this.props.side)
@@ -545,14 +547,14 @@ export default class Drawer extends Component {
   isTopOrBottomSide = () => ["top", "bottom"].includes(this.props.side);
   isLeftOrTopSide = () => {
     let side = "left";
-    if (I18nManager.isRTL) {
+    if (this.props.isRTL) {
       side = "right";
     }
     return [side, "top"].includes(this.props.side);
   }
   isRightOrBottomSide = () => {
     let side = "right"
-    if (I18nManager.isRTL) {
+    if (this.props.isRTL) {
       side = "left"
     }
     return [side, "bottom"].includes(this.props.side);
